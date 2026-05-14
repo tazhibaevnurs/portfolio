@@ -1,0 +1,38 @@
+{% extends "dashboard/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<h1>{{ title }}</h1>
+<form method="post" action="">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+    <div class="msg error">{{ form.non_field_errors }}</div>
+    {% endif %}
+    <div class="card">
+        <label for="id_title">Заголовок</label>
+        {{ form.title }}{{ form.title.errors }}
+        <label for="id_body">Описание</label>
+        <p class="hint">На сайте поддерживается HTML: например &lt;strong&gt;акцент&lt;/strong&gt; для выделения.</p>
+        {{ form.body }}{{ form.body.errors }}
+        <div class="row">
+            <div>
+                <label for="id_icon">Иконка (эмодзи)</label>
+                {{ form.icon }}{{ form.icon.errors }}
+            </div>
+            <div>
+                <label for="id_sort_order">Порядок</label>
+                {{ form.sort_order }}{{ form.sort_order.errors }}
+            </div>
+        </div>
+        <div style="margin-top: 0.75rem;">
+            {{ form.is_active.errors }}
+            <label class="checkbox" for="id_is_active">
+                {{ form.is_active }} Показывать на главной
+            </label>
+        </div>
+    </div>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a class="btn" href="{% url 'dashboard_benefit_list' %}">К списку</a>
+    </div>
+</form>
+{% endblock %}

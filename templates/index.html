@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Full Stack Developer | Premium Solutions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0A0F14;
+            --bg-secondary: #0D1117;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --accent-green: #00FF94;
+            --accent-blue: #3B82F6;
+            --accent-cyan: #06B6D4;
+            --text-primary: #E2E8F0;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --border-color: rgba(0, 255, 148, 0.1);
+            --glow-green: 0 0 20px rgba(0, 255, 148, 0.3);
+            --glow-blue: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent-green);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.1s ease;
+            transform: translate(-50%, -50%);
+        }
+
+        .cursor.hover {
+            transform: translate(-50%, -50%) scale(1.5);
+            background: rgba(0, 255, 148, 0.1);
+        }
+
+        /* Matrix Rain Background */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.03;
+        }
+
+        /* Preloader */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .preloader-text {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-green);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .preloader-bar {
+            width: 300px;
+            height: 4px;
+            background: var(--bg-secondary);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .preloader-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+            width: 0%;
+            animation: loadSystem 2s ease-in-out forwards;
+        }
+
+        @keyframes loadSystem {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10, 15, 20, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-green);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--text-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-green);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-green);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 50px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content {
+            max-width: 700px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: rgba(0, 255, 148, 0.1);
+            border: 1px solid var(--border-green);
+            border-radius: 50px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-green);
+            margin-bottom: 30px;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            max-width: 550px;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-green), #00D67D);
+            color: var(--bg-primary);
+            border: none;
+            box-shadow: var(--glow-green);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(0, 255, 148, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--text-muted);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        /* Terminal Window */
+        .terminal {
+            position: absolute;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 500px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .terminal-header {
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            gap: 8px;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #FF5F56; }
+        .terminal-dot.yellow { background: #FFBD2E; }
+        .terminal-dot.green { background: #27C93F; }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .terminal-body {
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .terminal-line {
+            margin-bottom: 8px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .terminal-line .prompt {
+            color: var(--accent-green);
+        }
+
+        .terminal-line .command {
+            color: var(--text-primary);
+        }
+
+        .terminal-line .output {
+            color: var(--text-secondary);
+            padding-left: 20px;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .terminal-line .output.success { color: var(--accent-green); }
+        .terminal-line .output.info { color: var(--accent-blue); }
+        .terminal-line .output.warning { color: var(--accent-cyan); }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            background: var(--accent-green);
+            animation: blink 1s infinite;
+            margin-left: 2px;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Section Styles */
+        section {
+            padding: 100px 50px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Tech Stack — одна колонка, все группы внутри одного блока */
+        .tech-stack-unified {
+            max-width: 920px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 28px 32px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .tech-stack-unified:hover {
+            border-color: rgba(0, 255, 148, 0.25);
+            box-shadow: var(--glow-green);
+        }
+
+        .tech-stack-group {
+            padding: 18px 0;
+        }
+
+        .tech-stack-group:not(:last-child) {
+            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+        }
+
+        .tech-stack-group:first-child {
+            padding-top: 0;
+        }
+
+        .tech-stack-group:last-child {
+            padding-bottom: 0;
+        }
+
+        .tech-stack-group h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tech-stack-group h3 span {
+            color: var(--accent-green);
+        }
+
+        @media (max-width: 600px) {
+            .tech-stack-unified {
+                padding: 20px 18px 22px;
+            }
+        }
+
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tech-tag {
+            padding: 8px 14px;
+            background: rgba(0, 255, 148, 0.05);
+            border: 1px solid rgba(0, 255, 148, 0.2);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .tech-tag:hover {
+            background: rgba(0, 255, 148, 0.1);
+            color: var(--accent-green);
+            border-color: var(--accent-green);
+        }
+
+        /* Projects Section */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .project-card {
+            background: rgba(21, 28, 40, 0.92);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card::before {
+            content: '';
+            flex-shrink: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
+        }
+
+        .project-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(56, 189, 248, 0.25);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+        }
+
+        .project-thumb {
+            flex-shrink: 0;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            max-height: 200px;
+            background: linear-gradient(145deg, #111923, #1a2535);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .project-thumb.has-img {
+            background: #0f141d;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .project-thumb-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
+        }
+
+        .project-thumb-placeholder {
+            font-size: 3.25rem;
+            opacity: 0.35;
+            line-height: 1;
+        }
+
+        .has-img .project-thumb-placeholder {
+            display: none;
+        }
+
+        .project-copy {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 18px 22px 22px;
+        }
+
+        .project-heading {
+            margin-bottom: 10px;
+        }
+
+        .project-category {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .project-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 18px;
+            line-height: 1.65;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 6;
+            overflow: hidden;
+        }
+
+        .project-stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(148, 163, 184, 0.12);
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent-green);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .project-deploy-row {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0 0 12px 0;
+        }
+
+        .project-deploy-row .pd-label {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-green);
+            margin-right: 6px;
+        }
+
+        .project-quality {
+            margin: 14px 0 16px;
+            padding: 14px 14px 16px;
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(148, 163, 184, 0.14);
+            border-radius: 10px;
+        }
+
+        .project-quality-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--accent-green);
+            margin: 0 0 8px 0;
+        }
+
+        .project-quality-lead {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.55;
+            margin: 0 0 10px 0;
+        }
+
+        /* PageSpeed-style gauge row (four rings) */
+        .psi-strategy {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin: 0 0 8px 0;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .psi-gauges {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px 6px;
+            margin: 0 0 14px 0;
+            padding: 12px 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 10px;
+        }
+
+        .psi-gauges--secondary {
+            margin-top: -4px;
+            padding: 10px 8px;
+            opacity: 0.95;
+        }
+
+        .psi-gauges--secondary .psi-gauge {
+            width: 48px;
+            height: 48px;
+        }
+
+        .psi-gauges--secondary .psi-gauge-inner {
+            width: 36px;
+            height: 36px;
+        }
+
+        .psi-gauges--secondary .psi-gauge-num {
+            font-size: 0.85rem;
+        }
+
+        .psi-gauges--secondary .psi-gauge-caption {
+            font-size: 0.62rem;
+        }
+
+        .psi-gauge-item {
+            flex: 1 1 18%;
+            min-width: 56px;
+            max-width: 25%;
+            text-align: center;
+        }
+
+        .psi-gauge {
+            --psi-score: 0;
+            --arc: #64748b;
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 6px;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .psi-gauge:not(.psi-gauge--na) {
+            background: conic-gradient(
+                var(--arc) 0deg calc(var(--psi-score) * 3.6deg),
+                rgba(71, 85, 105, 0.38) calc(var(--psi-score) * 3.6deg) 360deg
+            );
+        }
+
+        .psi-gauge--good {
+            --arc: #0cce6b;
+        }
+
+        .psi-gauge--mid {
+            --arc: #ffa400;
+        }
+
+        .psi-gauge--low {
+            --arc: #ff4e42;
+        }
+
+        .psi-gauge--na {
+            background: rgba(71, 85, 105, 0.4);
+        }
+
+        .psi-gauge-inner {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(21, 28, 40, 0.98);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.08);
+        }
+
+        .psi-gauge-num {
+            font-weight: 700;
+            font-size: 0.95rem;
+            line-height: 1;
+            font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+        }
+
+        .psi-num--good {
+            color: #0cce6b;
+        }
+
+        .psi-num--mid {
+            color: #ffa400;
+        }
+
+        .psi-num--low {
+            color: #ff4e42;
+        }
+
+        .psi-num--na {
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .psi-gauge-caption {
+            display: block;
+            font-size: 0.62rem;
+            line-height: 1.3;
+            color: var(--text-secondary);
+            max-width: 100px;
+            min-height: 2.6em;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 400px) {
+            .psi-gauge-item {
+                min-width: 48px;
+                max-width: 50%;
+            }
+        }
+
+        .project-quality-scores {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+            margin: 0 0 8px 0;
+        }
+
+        .project-quality-scores strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .project-quality-cwv {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin: 0 0 8px 0;
+            line-height: 1.5;
+        }
+
+        .project-quality-lab {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            margin: 0 0 10px 0;
+            line-height: 1.45;
+        }
+
+        .project-quality-diag {
+            margin: 0 0 8px 0;
+            padding-left: 1.1rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .project-quality-diag li {
+            margin-bottom: 4px;
+        }
+
+        .project-quality-meta {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            margin: 0 0 10px 0;
+        }
+
+        .project-quality-profile {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin: 0 0 10px 0;
+            line-height: 1.45;
+        }
+
+        .project-quality-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: #5eead4;
+            text-decoration: none;
+        }
+
+        .project-quality-link:hover {
+            text-decoration: underline;
+        }
+
+        .project-tech span {
+            padding: 5px 10px;
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: #94c5fd;
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-green);
+            text-decoration: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            margin-top: auto;
+            padding-top: 16px;
+            transition: gap 0.3s ease;
+        }
+
+        .project-link:hover {
+            gap: 15px;
+        }
+
+        /* Client benefits (#benefits) */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 1024px) {
+            .benefits-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .benefit-card {
+            background: rgba(21, 28, 40, 0.92);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 14px;
+            padding: 24px 22px 26px;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Скролл-анимация только карточек (остальной сайт без изменений) */
+        .benefit-reveal {
+            opacity: 0;
+            transform: translate3d(0, 26px, 0) scale(0.985);
+            transition:
+                opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+            transition-delay: calc(var(--i, 0) * 0.065s);
+            will-change: opacity, transform;
+        }
+
+        .benefit-reveal.is-visible {
+            opacity: 1;
+            transform: translate3d(0, 0, 0) scale(1);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .benefit-reveal {
+                opacity: 1;
+                transform: none;
+                transition: none;
+            }
+        }
+
+        .benefit-index {
+            position: absolute;
+            top: 18px;
+            right: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            color: rgba(0, 255, 148, 0.45);
+            pointer-events: none;
+            user-select: none;
+        }
+
+        @media (max-width: 480px) {
+            .benefit-index {
+                top: 14px;
+                right: 14px;
+                font-size: 0.82rem;
+            }
+
+            .benefit-card-header {
+                padding-right: 2.25rem;
+            }
+        }
+
+        .benefit-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
+            border-radius: 14px 14px 0 0;
+        }
+
+        .benefit-card.is-visible:hover {
+            transform: translate3d(0, -4px, 0) scale(1);
+            border-color: rgba(0, 255, 148, 0.22);
+            box-shadow: var(--glow-green);
+        }
+
+        .benefit-card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding-right: 2.75rem;
+        }
+
+        .benefit-icon {
+            font-size: 1.35rem;
+            line-height: 1.2;
+            flex-shrink: 0;
+            min-width: 1.5rem;
+            text-align: center;
+        }
+
+        .benefit-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+            line-height: 1.35;
+            color: var(--text-primary);
+        }
+
+        .benefit-body {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.55;
+            margin: 0;
+        }
+
+        .benefit-body strong {
+            color: var(--text-primary);
+            font-weight: 600;
+            background: linear-gradient(
+                90deg,
+                rgba(0, 255, 148, 0.18),
+                rgba(59, 130, 246, 0.12)
+            );
+            padding: 0 0.2em;
+            border-radius: 3px;
+            box-decoration-break: clone;
+            -webkit-box-decoration-break: clone;
+        }
+
+        .benefit-body p {
+            margin: 0 0 0.65rem 0;
+        }
+
+        .benefit-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Contact Section */
+        .contact {
+            text-align: center;
+            padding: 120px 50px;
+        }
+
+        .contact-wrapper {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .contact-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .contact-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+        }
+
+        .contact-terminal {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            text-align: left;
+            margin-bottom: 40px;
+        }
+
+        .contact-form {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-green);
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-green);
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-success {
+            display: none;
+            padding: 20px;
+            background: rgba(0, 255, 148, 0.1);
+            border: 1px solid var(--accent-green);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-green);
+            margin-top: 20px;
+        }
+
+        .form-success.show {
+            display: block;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-link:hover {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 50px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        .footer-logo span {
+            color: var(--accent-green);
+        }
+
+        .footer-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .terminal {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 15px 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 100px 20px 60px;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            section {
+                padding: 60px 20px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-title {
+                font-size: 2rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+
+        /* Animations */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Floating Code Elements */
+        .floating-code {
+            position: fixed;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-green);
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 0;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+
+    <!-- Matrix Background -->
+    <canvas class="matrix-bg" id="matrixCanvas"></canvas>
+
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="preloader-text">> initializing portfolio_v2.0...</div>
+        <div class="preloader-bar">
+            <div class="preloader-progress"></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="#" class="logo">tazhibaev<span>.py</span></a>
+        <ul class="nav-links">
+            <li><a href="#projects">Проекты</a></li>
+            {% if client_benefits %}
+            <li><a href="#benefits">Выгоды</a></li>
+            {% endif %}
+            <li><a href="#skills">Стек</a></li>
+            <li><a href="#contact">Контакты</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span>Доступен для проектов</span>
+            </div>
+            <h1>Full Stack Python Developer <span class="highlight">для амбициозного бизнеса</span></h1>
+            <p class="hero-subtitle">Превращаю код в бизнес-инструменты. Создаю высоконагруженные платформы, интеллектуальную автоматизацию и AI-решения, которые приносят реальный доход.</p>
+            <div class="hero-cta">
+                <a href="#contact" class="btn btn-primary">
+                    <span>Обсудить проект</span>
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <a href="#projects" class="btn btn-secondary">Смотреть работы</a>
+            </div>
+        </div>
+
+        <!-- Terminal Window -->
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-dot red"></div>
+                <div class="terminal-dot yellow"></div>
+                <div class="terminal-dot green"></div>
+                <div class="terminal-title">portfolio_terminal.sh</div>
+            </div>
+            <div class="terminal-body">
+                <div class="terminal-line">
+                    <span class="prompt">$</span> <span class="command">python init_developer.py</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="output success">[✓] Loading Python Core... done</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="output success">[✓] Loading Django/FastAPI modules... done</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="output success">[✓] Loading AI/ML capabilities... done</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="output success">[✓] Ready for production</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="prompt">$</span> <span class="command">cat skills.json</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="output info">{ "backend": ["Django", "FastAPI", "Flask"],</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="output info">  "frontend": ["React", "Vue", "JavaScript"],</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="output info">  "ai": ["OpenAI", "Neural Networks", "NLP"],</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="output info">  "devops": ["Docker", "CI/CD", "AWS"] }</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="prompt">$</span> <span class="command typing-cursor"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects">
+        <div class="section-header">
+            <span class="section-label">// portfolio</span>
+            <h2 class="section-title">Реализованные проекты</h2>
+            <p class="section-subtitle">Бизнес-решения с прозрачными метриками качества (PageSpeed / Lighthouse) и понятным стеком</p>
+        </div>
+        <div class="projects-grid">
+            {% for p in projects %}
+            <div class="project-card fade-in-up">
+                <div class="project-thumb{% if p.hero_visual_url %} has-img{% endif %}">
+                    {% if p.hero_visual_url %}
+                    <img class="project-thumb-img" src="{{ p.hero_visual_url }}" alt="{{ p.card_title }}" loading="lazy" decoding="async">
+                    {% else %}
+                    <div class="project-thumb-placeholder">{{ p.icon_emoji|default:"🚀" }}</div>
+                    {% endif %}
+                </div>
+                <div class="project-copy">
+                    <header class="project-heading">
+                        <div class="project-category">{{ p.category|default:"Project" }}</div>
+                        <h3 class="project-title">{{ p.card_title }}</h3>
+                    </header>
+                    <p class="project-description">{{ p.summary|default:p.author_notes|truncatewords:80 }}</p>
+                    {% if p.stat1_value or p.stat2_value %}
+                    <div class="project-stats">
+                        {% if p.stat1_value %}
+                        <div class="stat">
+                            <span class="stat-value">{{ p.stat1_value }}</span>
+                            <span class="stat-label">{{ p.stat1_label|default:"" }}</span>
+                        </div>
+                        {% endif %}
+                        {% if p.stat2_value %}
+                        <div class="stat">
+                            <span class="stat-value">{{ p.stat2_value }}</span>
+                            <span class="stat-label">{{ p.stat2_label|default:"" }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% if p.show_pagespeed_block %}
+                    <div class="project-quality">
+                        <div class="project-quality-title">PageSpeed Insights</div>
+                        {% for section in p.pagespeed_gauge_sections %}
+                        <p class="psi-strategy">{{ section.title }}</p>
+                        <div class="psi-gauges{% if not forloop.first %} psi-gauges--secondary{% endif %}">
+                            {% for g in section.items %}
+                            <div class="psi-gauge-item">
+                                <div class="psi-gauge psi-gauge--{{ g.tier }}"{% if g.tier != 'na' %} style="--psi-score: {% if g.value is not None %}{{ g.value }}{% else %}0{% endif %}"{% endif %}>
+                                    <div class="psi-gauge-inner">
+                                        <span class="psi-gauge-num psi-num--{{ g.tier }}">{% if g.value is not None %}{{ g.value }}{% else %}—{% endif %}</span>
+                                    </div>
+                                </div>
+                                <span class="psi-gauge-caption">{{ g.label }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% empty %}
+                        {% if not p.pagespeed_has_scores %}
+                        <p class="project-quality-lead" style="margin-top:4px;">Оценки Lighthouse (0–100) появятся после обновления метрик через API в панели проекта или вручную из <a href="https://pagespeed.web.dev/" target="_blank" rel="noopener noreferrer" style="color:#5eead4;">pagespeed.web.dev</a>.</p>
+                        {% endif %}
+                        {% endfor %}
+                        {% if p.pagespeed_external_url %}
+                        <a href="{{ p.pagespeed_external_url }}" class="project-quality-link" target="_blank" rel="noopener noreferrer">Открыть полный отчёт PageSpeed →</a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% if p.deployment_platforms %}
+                    <div class="project-deploy-row"><span class="pd-label">Деплой:</span> {{ p.deployment_platforms|join:" · " }}</div>
+                    {% endif %}
+                    {% if p.tech_tags %}
+                    <div class="project-deploy-row" style="margin-bottom:6px;"><span class="pd-label">Стек:</span></div>
+                    <div class="project-tech">
+                        {% for tag in p.tech_tags %}
+                        <span>{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <a href="{{ p.link_href }}" target="_blank" rel="noopener noreferrer" class="project-link">
+                        Посмотреть проект →
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <p class="section-subtitle" style="grid-column: 1/-1; text-align: center;">
+                Проекты скоро появятся. Добавьте их в <a href="/dashboard/" style="color: var(--accent-cyan);">панели управления</a>.
+            </p>
+            {% endfor %}
+        </div>
+    </section>
+
+    {% if client_benefits %}
+    <!-- Benefits for clients -->
+    <section id="benefits">
+        <div class="section-header">
+            <span class="section-label">// client_value</span>
+            <h2 class="section-title">Почему выгодно работать с нами</h2>
+            <p class="section-subtitle">
+                Сроки, качество и понятные правила — <strong style="color:var(--text-primary);font-weight:600;">без лишней бюрократии</strong>.
+            </p>
+        </div>
+        <div class="benefits-grid">
+            {% for b in client_benefits %}
+            <article class="benefit-card benefit-reveal" style="--i: {{ forloop.counter0 }};">
+                <span class="benefit-index" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</span>
+                <div class="benefit-card-header">
+                    {% if b.icon %}
+                    <span class="benefit-icon" aria-hidden="true">{{ b.icon }}</span>
+                    {% else %}
+                    <span class="benefit-icon" aria-hidden="true" style="color:var(--accent-green);font-family:'JetBrains Mono',monospace;font-size:0.95rem;">◆</span>
+                    {% endif %}
+                    <h3 class="benefit-title">{{ b.title }}</h3>
+                </div>
+                <div class="benefit-body">{{ b.body|safe }}</div>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+    <noscript>
+        <style>
+            #benefits .benefit-reveal { opacity: 1 !important; transform: none !important; }
+        </style>
+    </noscript>
+    {% endif %}
+
+    <!-- Tech Stack Section -->
+    <section id="skills">
+        <div class="section-header">
+            <span class="section-label">// tech_stack</span>
+            <h2 class="section-title">{{ tech_stack.title }}</h2>
+            <p class="section-subtitle">{{ tech_stack.subtitle }}</p>
+        </div>
+        {{ tech_stack|json_script:"tech-stack-data" }}
+        <div class="tech-stack-unified">
+            {% for key, block in tech_stack.categories.items %}
+            <div class="tech-stack-group fade-in-up">
+                <h3><span>▸</span> {{ block.title }}</h3>
+                <div class="tech-tags">
+                    {% for name in block.tags %}
+                    <span class="tech-tag">{{ name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% empty %}
+            <p class="section-subtitle" style="text-align: center; padding: 1rem;">
+                Добавьте теги стека в <a href="/dashboard/tech-stack/" style="color: var(--accent-cyan);">панели</a>.
+            </p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="contact-wrapper">
+            <div class="section-header">
+                <span class="section-label">// get_in_touch</span>
+                <h2 class="contact-title">Обсудим ваш проект?</h2>
+                <p class="contact-subtitle">Оставьте заявку, и я свяжусь с вами в течение часа для обсуждения деталей</p>
+            </div>
+
+            <div class="contact-links" style="justify-content: center; margin-top: 40px;">
+                <a href="https://t.me/tazhibaevn/" target="_blank" class="btn btn-primary" style="padding: 20px 40px; font-size: 1.2rem;">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.696.065-1.225-.46-1.901-.903-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                    </svg>
+                    Написать в Telegram
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">tazhibaev<span>.py</span> © 2026</div>
+            <div class="footer-text">Python Full Stack Developer | Premium Solutions</div>
+        </div>
+    </footer>
+
+    <script>
+        // Preloader
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.preloader').classList.add('hidden');
+            }, 2000);
+        });
+
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        document.querySelectorAll('a, button, .project-card, .benefit-card, .project-quality, .tech-stack-unified, .tech-stack-group').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // Matrix Rain Effect
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()_+-=[]{}|;:,.<>?';
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(10, 15, 20, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#00FF94';
+            ctx.font = fontSize + 'px JetBrains Mono';
+            
+            for (let i = 0; i < drops.length; i++) {
+                const char = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+                
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 50);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Scroll Animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-up').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Анимация только блока выгод — карточки по одной с задержкой (адаптивно к ширине)
+        const benefitCards = document.querySelectorAll('#benefits .benefit-reveal');
+        if (benefitCards.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            const benefitObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, {
+                threshold: 0.12,
+                rootMargin: '0px 0px -8% 0px',
+            });
+            benefitCards.forEach((el) => benefitObserver.observe(el));
+        } else if (benefitCards.length) {
+            benefitCards.forEach((el) => el.classList.add('is-visible'));
+        }
+
+        // Form Submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const btn = this.querySelector('button[type="submit"]');
+            btn.innerHTML = '<span>Отправка...</span>';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.innerHTML = '<span>Отправить заявку</span>';
+                btn.disabled = false;
+                document.getElementById('formSuccess').classList.add('show');
+                this.reset();
+                
+                setTimeout(() => {
+                    document.getElementById('formSuccess').classList.remove('show');
+                }, 5000);
+            }, 1500);
+        });
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

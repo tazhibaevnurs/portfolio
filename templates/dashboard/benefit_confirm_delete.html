@@ -1,0 +1,11 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Удалить{% endblock %}
+{% block content %}
+<h1>Удалить преимущество</h1>
+<p>Удалить «<strong>{{ benefit.title }}</strong>»? Это действие нельзя отменить.</p>
+<form method="post" action="">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Да, удалить</button>
+    <a class="btn" href="{% url 'dashboard_benefit_list' %}">Нет</a>
+</form>
+{% endblock %}

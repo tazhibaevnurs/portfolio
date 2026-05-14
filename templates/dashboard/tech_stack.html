@@ -1,0 +1,126 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Технологический стек{% endblock %}
+{% block extra_css %}
+<style>
+    .wrap { max-width: 56rem; }
+    .tech-dash .card h2 { font-size: 1rem; margin: 0 0 0.75rem 0; color: var(--muted); font-weight: 600; }
+    .tech-cat { margin-bottom: 1.25rem; }
+    .chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem; min-height: 2rem; }
+    form.chip {
+        display: inline-flex; align-items: center; gap: 0.35rem;
+        padding: 0.35rem 0.65rem; border-radius: 6px;
+        margin: 0;
+        border: 1px solid var(--border); background: #21262d;
+        font-size: 0.88rem;
+    }
+    form.chip button[type="submit"] {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 1.35rem; height: 1.35rem; padding: 0; margin: 0;
+        border: none; border-radius: 4px; cursor: pointer;
+        background: rgba(248, 81, 73, 0.15); color: var(--danger);
+        font-size: 1rem; line-height: 1;
+    }
+    form.chip button[type="submit"]:hover { background: rgba(248, 81, 73, 0.35); }
+    .add-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: flex-end; }
+    .add-row select { max-width: 280px; margin-top: 0; }
+    .hint-empty { font-size: 0.85rem; color: var(--muted); }
+    .ajax-flash { animation: fadeOut 4s forwards; }
+    @keyframes fadeOut {
+        0%, 70% { opacity: 1; }
+        100% { opacity: 0; }
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="tech-dash" data-tech-stack-url="{% url 'dashboard_tech_stack' %}">
+    <h1>Технологический стек на главной</h1>
+    <p class="hint">Чипы — теги, видимые на сайте. «×» убирает с главной (тег остаётся в списке). Выпадающий список — теги, скрытые с главной; кнопка возвращает их. Изменения сохраняются без перезагрузки страницы.</p>
+
+    {% for cat in categories %}
+    <div class="card tech-cat" data-category="{{ cat.key }}">
+        <h2>{{ cat.label }}</h2>
+        {% include "dashboard/partials/tech_category_controls.html" with cat=cat %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+(function () {
+    var root = document.querySelector('.tech-dash');
+    if (!root) return;
+    var url = root.getAttribute('data-tech-stack-url');
+
+    function csrfToken() {
+        var m = document.cookie.match(/csrftoken=([^;]+)/);
+        return m ? decodeURIComponent(m[1].trim()) : '';
+    }
+
+    function flash(msg, level) {
+        var wrap = document.querySelector('.wrap');
+        if (!wrap) return;
+        var box = document.createElement('div');
+        box.className = 'messages ajax-flash';
+        var inner = document.createElement('div');
+        inner.className = 'msg ' + (level || 'success');
+        inner.textContent = msg;
+        box.appendChild(inner);
+        wrap.insertBefore(box, wrap.firstChild);
+        setTimeout(function () { box.remove(); }, 4200);
+    }
+
+    root.addEventListener('submit', function (e) {
+        var form = e.target;
+        if (!(form instanceof HTMLFormElement)) return;
+        if (!form.matches('form.chip, form.add-row')) return;
+        e.preventDefault();
+
+        var fd = new FormData(form);
+        fd.append('ajax', '1');
+
+        fetch(url, {
+            method: 'POST',
+            body: fd,
+            headers: {
+                'X-CSRFToken': csrfToken(),
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            credentials: 'same-origin'
+        }).then(function (r) {
+            var ct = r.headers.get('content-type') || '';
+            if (ct.indexOf('application/json') === -1) {
+                flash('Сервер вернул не JSON — обновите страницу или войдите снова.', 'error');
+                return null;
+            }
+            return r.json().then(function (data) {
+                return { ok: r.ok, data: data };
+            });
+        }).then(function (result) {
+            if (!result) return;
+            var d = result.data;
+            if (!result.ok || !d.ok) {
+                flash(d.message || 'Ошибка запроса', 'error');
+                return;
+            }
+            flash(d.message, 'success');
+            if (d.html && d.category) {
+                var card = root.querySelector('.tech-cat[data-category="' + d.category + '"]');
+                if (card) {
+                    var controls = card.querySelector('.tech-cat-controls');
+                    if (controls) {
+                        var wrap = document.createElement('div');
+                        wrap.innerHTML = d.html.trim();
+                        var nextControls = wrap.querySelector('.tech-cat-controls');
+                        if (nextControls) {
+                            controls.replaceWith(nextControls);
+                        }
+                    }
+                }
+            }
+        }).catch(function () {
+            flash('Сеть или сервер недоступны', 'error');
+        });
+    });
+})();
+</script>
+{% endblock %}

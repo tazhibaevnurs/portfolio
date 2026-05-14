@@ -1,0 +1,16 @@
+{% extends "admin/change_list.html" %}
+{% load i18n %}
+
+{% block object-tools-items %}
+{{ block.super }}
+{% if show_cv_button %}
+<li>
+  <form method="post" action="{% url 'admin:main_project_generate_cv' %}" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="button" style="margin-left:8px;background:#417690;color:#fff;border:none;padding:10px 14px;cursor:pointer;border-radius:4px;">
+      Сгенерировать CV из видимых проектов
+    </button>
+  </form>
+</li>
+{% endif %}
+{% endblock %}

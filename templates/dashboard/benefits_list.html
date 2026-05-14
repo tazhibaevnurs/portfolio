@@ -1,0 +1,40 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Выгоды для клиента{% endblock %}
+{% block content %}
+<h1>Выгоды для клиента</h1>
+<p style="color:var(--muted);font-size:0.9rem;margin-top:-0.5rem;">
+    Блок «Почему выгодно работать с нами» на главной (<code>#benefits</code>). Показываются только записи с флагом «На сайте».
+</p>
+<p><a class="btn btn-primary" href="{% url 'dashboard_benefit_create' %}">+ Новое преимущество</a></p>
+{% if benefits %}
+<table>
+    <thead>
+        <tr>
+            <th>Заголовок</th>
+            <th>На сайте</th>
+            <th>Порядок</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for b in benefits %}
+        <tr>
+            <td>
+                {% if b.icon %}<span style="margin-right:0.35rem;">{{ b.icon }}</span>{% endif %}
+                <strong>{{ b.title }}</strong>
+            </td>
+            <td>{% if b.is_active %}да{% else %}нет{% endif %}</td>
+            <td>{{ b.sort_order }}</td>
+            <td>
+                <a href="{% url 'dashboard_benefit_edit' b.pk %}">Изменить</a>
+                ·
+                <a href="{% url 'dashboard_benefit_delete' b.pk %}">Удалить</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p style="color:var(--muted);">Пока нет записей.</p>
+{% endif %}
+{% endblock %}

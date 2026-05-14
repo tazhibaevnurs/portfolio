@@ -1,0 +1,33 @@
+{# Фрагмент карточки категории: чипы + форма добавления (для AJAX-обновления) #}
+<div class="tech-cat-controls">
+    <div class="chip-row">
+        {% for t in cat.visible %}
+        <form method="post" class="chip" action="{% url 'dashboard_tech_stack' %}">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="remove">
+            <input type="hidden" name="tag_id" value="{{ t.pk }}">
+            <span>{{ t.name }}</span>
+            <button type="submit" title="Убрать с главной" aria-label="Убрать с главной">×</button>
+        </form>
+        {% empty %}
+        <span class="hint-empty">На главной пока нет тегов в этой категории.</span>
+        {% endfor %}
+    </div>
+    <form method="post" class="add-row" action="{% url 'dashboard_tech_stack' %}">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="add">
+        <div>
+            <label for="add-{{ cat.key }}">Добавить на главную</label>
+            <select id="add-{{ cat.key }}" name="tag_id" {% if cat.hidden %}required{% else %}disabled{% endif %}>
+                {% if cat.hidden %}
+                {% for t in cat.hidden %}
+                <option value="{{ t.pk }}">{{ t.name }}</option>
+                {% endfor %}
+                {% else %}
+                <option value="">Все теги этой категории уже на главной</option>
+                {% endif %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary" {% if not cat.hidden %}disabled{% endif %}>Добавить</button>
+    </form>
+</div>

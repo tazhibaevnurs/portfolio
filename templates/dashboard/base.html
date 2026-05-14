@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Панель{% endblock %} · portfolio</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --muted: #8b949e;
+            --accent: #3fb950;
+            --danger: #f85149;
+            --link: #58a6ff;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Segoe UI", system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        a { color: var(--link); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--card);
+        }
+        .top nav { display: flex; gap: 1.25rem; align-items: center; }
+        .top .user { color: var(--muted); font-size: 0.9rem; }
+        .wrap { max-width: 880px; margin: 0 auto; padding: 1.5rem; }
+        .messages { margin-bottom: 1rem; }
+        .msg { padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 0.5rem; }
+        .msg.success { background: rgba(63, 185, 80, 0.15); border: 1px solid var(--accent); }
+        .msg.warning { background: rgba(210, 153, 34, 0.15); border: 1px solid #d29922; }
+        .msg.error { background: rgba(248, 81, 73, 0.12); border: 1px solid var(--danger); }
+        h1 { font-size: 1.35rem; margin: 0 0 1rem 0; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+        th, td { border-bottom: 1px solid var(--border); padding: 0.65rem 0.5rem; text-align: left; }
+        th { color: var(--muted); font-weight: 600; }
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .btn-primary { background: #238636; border-color: #2ea043; color: #fff; }
+        .btn-danger { background: transparent; border-color: var(--danger); color: var(--danger); }
+        .btn-ghost { background: transparent; }
+        form.inline { display: inline; margin: 0; }
+        label { display: block; margin-top: 0.75rem; font-size: 0.85rem; color: var(--muted); }
+        input[type="text"], input[type="url"], input[type="number"], textarea, select {
+            width: 100%;
+            max-width: 100%;
+            padding: 0.5rem 0.65rem;
+            margin-top: 0.25rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: #0d1117;
+            color: var(--text);
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        .checkbox label { display: inline-flex; align-items: center; gap: 0.5rem; }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .hint { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .field-row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 0.75rem 1rem; }
+        .field-row .field-main { flex: 1 1 220px; min-width: 0; }
+        .field-row .lock-llm {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 1.5rem;
+            white-space: nowrap;
+        }
+        .field-row .lock-llm input { width: auto; margin: 0; accent-color: var(--accent); }
+        .form-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-top: 1rem; }
+        @media (max-width: 640px) { .row { grid-template-columns: 1fr; } .field-row .lock-llm { margin-top: 0.25rem; width: 100%; } }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header class="top">
+        <nav>
+            <a href="{% url 'dashboard_project_list' %}">Проекты</a>
+            <a href="{% url 'dashboard_benefit_list' %}">Выгоды</a>
+            <a href="{% url 'dashboard_tech_stack' %}">Стек</a>
+            <a href="{% url 'dashboard_cv' %}">Резюме (CV)</a>
+            <a href="{% url 'home' %}" target="_blank" rel="noopener">Сайт ↗</a>
+        </nav>
+        <div style="display:flex;align-items:center;gap:1rem;">
+            {% if user.is_authenticated %}
+            <span class="user">{{ user.username }}</span>
+            <form class="inline" method="post" action="{% url 'dashboard_logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-ghost">Выйти</button>
+            </form>
+            {% endif %}
+        </div>
+    </header>
+    <div class="wrap">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="msg {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

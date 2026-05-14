@@ -1,0 +1,37 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Проекты{% endblock %}
+{% block content %}
+<h1>Проекты</h1>
+<p style="color:var(--muted);font-size:0.9rem;margin-top:-0.5rem;">
+    После сохранения бэкенд подтягивает README и метаданные репозитория, затем вызывает LLM для карточки.
+</p>
+<p><a class="btn btn-primary" href="{% url 'dashboard_project_create' %}">+ Новый проект</a></p>
+{% if projects %}
+<table>
+    <thead>
+        <tr>
+            <th>Название</th>
+            <th>На сайте</th>
+            <th>Порядок</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in projects %}
+        <tr>
+            <td><strong>{{ p.display_title|default:p.title }}</strong><br><span style="color:var(--muted);font-size:0.8rem;">{{ p.slug }}</span></td>
+            <td>{% if p.is_visible %}да{% else %}нет{% endif %}</td>
+            <td>{{ p.sort_order }}</td>
+            <td>
+                <a href="{% url 'dashboard_project_edit' p.slug %}">Изменить</a>
+                ·
+                <a href="{% url 'dashboard_project_delete' p.slug %}">Удалить</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p style="color:var(--muted);">Пока нет проектов.</p>
+{% endif %}
+{% endblock %}

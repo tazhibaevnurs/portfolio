@@ -1,0 +1,22 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Резюме{% endblock %}
+{% block content %}
+<h1>Резюме (CV)</h1>
+<p style="color:var(--muted);font-size:0.9rem;">
+    Генерация по всем проектам в БД (с пометкой, виден проект на главной или нет).
+    {% if settings.cv_updated_at %}
+    <br>Обновлено: {{ settings.cv_updated_at }}
+    {% endif %}
+</p>
+<form method="post" action="">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Сгенерировать / обновить CV</button>
+</form>
+<div class="card" style="margin-top:1rem;">
+    {% if settings.cv_markdown %}
+    <pre style="white-space:pre-wrap;word-break:break-word;font-size:0.9rem;line-height:1.5;margin:0;">{{ settings.cv_markdown }}</pre>
+    {% else %}
+    <p style="color:var(--muted);">CV ещё не сгенерировано. Нажмите кнопку выше.</p>
+    {% endif %}
+</div>
+{% endblock %}

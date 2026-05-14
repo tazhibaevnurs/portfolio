@@ -1,0 +1,228 @@
+{% extends "dashboard/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<h1>{{ title }}</h1>
+<form method="post" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+        <div class="msg error">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <div class="card">
+        <strong>Основное</strong>
+        <label for="id_title">Название (внутреннее)</label>
+        {{ form.title }}{{ form.title.errors }}
+        <label for="id_author_notes">Описание проекта</label>
+        {{ form.author_notes }}{{ form.author_notes.errors }}
+        <label for="id_git_repository_url">URL Git-репозитория</label>
+        {{ form.git_repository_url }}{{ form.git_repository_url.errors }}
+        <div class="row">
+            <div>
+                <label for="id_sort_order">Порядок сортировки</label>
+                {{ form.sort_order }}{{ form.sort_order.errors }}
+            </div>
+            <div style="padding-top:1.75rem;">
+                {{ form.is_visible.errors }}
+                <label class="checkbox" for="id_is_visible" style="display:flex;align-items:center;gap:0.5rem;margin-top:0;">
+                    {{ form.is_visible }} Показывать на главной
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <strong>Карточка на сайте</strong>
+        <p class="hint">Отметьте «Не менять LLM» у полей, которые вы правите вручную и не хотите перезаписывать. Серая кнопка внизу — сохранить без вызова LLM.</p>
+
+        <div class="field-row">
+            <div class="field-main">
+                <label for="id_display_title">Заголовок на сайте</label>
+                {{ form.display_title }}{{ form.display_title.errors }}
+            </div>
+            <label class="lock-llm" for="id_freeze_display_title">{{ form.freeze_display_title }} Не менять LLM</label>
+        </div>
+
+        <div class="field-row">
+            <div class="field-main">
+                <label for="id_category">Категория</label>
+                {{ form.category }}{{ form.category.errors }}
+            </div>
+            <label class="lock-llm" for="id_freeze_category">{{ form.freeze_category }} Не менять LLM</label>
+        </div>
+
+        <div class="field-row">
+            <div class="field-main">
+                <label for="id_summary">Краткое описание</label>
+                {{ form.summary }}{{ form.summary.errors }}
+            </div>
+            <label class="lock-llm" for="id_freeze_summary">{{ form.freeze_summary }} Не менять LLM</label>
+        </div>
+
+        <div class="row">
+            <div>
+                <div class="field-row">
+                    <div class="field-main">
+                        <label for="id_stat1_value">Метрика 1 — значение</label>
+                        {{ form.stat1_value }}{{ form.stat1_value.errors }}
+                    </div>
+                    <label class="lock-llm" for="id_freeze_stat1_value">{{ form.freeze_stat1_value }} Не менять LLM</label>
+                </div>
+            </div>
+            <div>
+                <div class="field-row">
+                    <div class="field-main">
+                        <label for="id_stat1_label">Метрика 1 — подпись</label>
+                        {{ form.stat1_label }}{{ form.stat1_label.errors }}
+                    </div>
+                    <label class="lock-llm" for="id_freeze_stat1_label">{{ form.freeze_stat1_label }} Не менять LLM</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div>
+                <div class="field-row">
+                    <div class="field-main">
+                        <label for="id_stat2_value">Метрика 2 — значение</label>
+                        {{ form.stat2_value }}{{ form.stat2_value.errors }}
+                    </div>
+                    <label class="lock-llm" for="id_freeze_stat2_value">{{ form.freeze_stat2_value }} Не менять LLM</label>
+                </div>
+            </div>
+            <div>
+                <div class="field-row">
+                    <div class="field-main">
+                        <label for="id_stat2_label">Метрика 2 — подпись</label>
+                        {{ form.stat2_label }}{{ form.stat2_label.errors }}
+                    </div>
+                    <label class="lock-llm" for="id_freeze_stat2_label">{{ form.freeze_stat2_label }} Не менять LLM</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="field-row">
+            <div class="field-main">
+                <label for="id_tech_tags_text">Стек (через запятую)</label>
+                {{ form.tech_tags_text }}{{ form.tech_tags_text.errors }}
+            </div>
+            <label class="lock-llm" for="id_freeze_tech_tags">{{ form.freeze_tech_tags }} Не менять LLM</label>
+        </div>
+
+        <div class="field-row">
+            <div class="field-main">
+                <label for="id_demo_url">Ссылка «Посмотреть проект»</label>
+                {{ form.demo_url }}{{ form.demo_url.errors }}
+            </div>
+            <label class="lock-llm" for="id_freeze_demo_url">{{ form.freeze_demo_url }} Не менять LLM</label>
+        </div>
+
+        <label for="id_deployment_platforms_text">Платформы (хостинг, CI, облако)</label>
+        <p class="hint">Не берётся из PageSpeed — только ваши факты: Vercel, Railway, VPS+Nginx и т.д. Показываются на карточке отдельно от стека.</p>
+        {{ form.deployment_platforms_text }}{{ form.deployment_platforms_text.errors }}
+
+        <p style="margin-top:1.25rem;"><strong>Качество (Google PageSpeed Insights)</strong></p>
+        <p class="hint">
+            Можно заполнить вручную по <a href="https://pagespeed.web.dev/" target="_blank" rel="noopener noreferrer">pagespeed.web.dev</a>
+            или нажать «Обновить метрики через API» ниже (нужен <code>GOOGLE_PAGESPEED_API_KEY</code> и сохранённый demo URL).
+        </p>
+        <label for="id_pagespeed_public_report_url">Прямая ссылка на полный отчёт</label>
+        <p class="hint">Скопируйте URL из браузера после анализа — заказчик откроет тот же отчёт.</p>
+        {{ form.pagespeed_public_report_url }}{{ form.pagespeed_public_report_url.errors }}
+
+        <label for="id_pagespeed_cwv_note">Одна строка про Core Web Vitals</label>
+        {{ form.pagespeed_cwv_note }}{{ form.pagespeed_cwv_note.errors }}
+
+        <label for="id_pagespeed_diag_good">Что уже хорошо (по строкам)</label>
+        {{ form.pagespeed_diag_good }}{{ form.pagespeed_diag_good.errors }}
+
+        <label for="id_pagespeed_diag_bad">Узкие места (по строкам)</label>
+        {{ form.pagespeed_diag_bad }}{{ form.pagespeed_diag_bad.errors }}
+
+        <label for="id_pagespeed_profile_note">Контекст типа проекта (честность)</label>
+        <p class="hint">Напоминание заказчику: лендинг и тяжёлое SPA несопоставимы по профилю метрик.</p>
+        {{ form.pagespeed_profile_note }}{{ form.pagespeed_profile_note.errors }}
+
+        <label for="id_card_image">Скриншот героя / изображение карточки</label>
+        <p class="hint">Файл имеет приоритет над URL. Можно сделать скрин главной страницы проекта и загрузить сюда.</p>
+        {{ form.card_image }}{{ form.card_image.errors }}
+
+        <label for="id_card_image_url">Или прямой URL картинки</label>
+        {{ form.card_image_url }}{{ form.card_image_url.errors }}
+
+        <div class="field-row">
+            <div class="field-main">
+                <label for="id_icon_emoji">Эмодзи-иконка</label>
+                {{ form.icon_emoji }}{{ form.icon_emoji.errors }}
+            </div>
+            <label class="lock-llm" for="id_freeze_icon_emoji">{{ form.freeze_icon_emoji }} Не менять LLM</label>
+        </div>
+    </div>
+
+    {% if project %}
+    <div class="card">
+        <strong>PageSpeed Insights</strong>
+        <p class="hint">
+            Оценка как на <a href="https://pagespeed.web.dev/" target="_blank" rel="noopener noreferrer">pagespeed.web.dev</a>
+            (Lighthouse: производительность, доступность, практики, SEO). В <code>.env</code> задайте <code>GOOGLE_PAGESPEED_API_KEY</code>.
+        </p>
+        {% with m=project.pagespeed_mobile_scores d=project.pagespeed_desktop_scores %}
+        {% if project.pagespeed_has_scores %}
+        <table style="width:100%;border-collapse:collapse;font-size:0.85rem;margin:0.75rem 0;">
+            <thead>
+                <tr style="text-align:left;color:var(--muted);">
+                    <th style="padding:4px 8px 4px 0;">Стратегия</th>
+                    <th style="padding:4px;">Perf</th>
+                    <th style="padding:4px;">A11y</th>
+                    <th style="padding:4px;">Best</th>
+                    <th style="padding:4px;">SEO</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding:4px 8px 4px 0;">Mobile</td>
+                    <td style="padding:4px;font-family:monospace;">{% if m.performance is not None %}{{ m.performance }}{% else %}—{% endif %}</td>
+                    <td style="padding:4px;font-family:monospace;">{% if m.accessibility is not None %}{{ m.accessibility }}{% else %}—{% endif %}</td>
+                    <td style="padding:4px;font-family:monospace;">{% if m.best_practices is not None %}{{ m.best_practices }}{% else %}—{% endif %}</td>
+                    <td style="padding:4px;font-family:monospace;">{% if m.seo is not None %}{{ m.seo }}{% else %}—{% endif %}</td>
+                </tr>
+                <tr>
+                    <td style="padding:4px 8px 4px 0;">Desktop</td>
+                    <td style="padding:4px;font-family:monospace;">{% if d.performance is not None %}{{ d.performance }}{% else %}—{% endif %}</td>
+                    <td style="padding:4px;font-family:monospace;">{% if d.accessibility is not None %}{{ d.accessibility }}{% else %}—{% endif %}</td>
+                    <td style="padding:4px;font-family:monospace;">{% if d.best_practices is not None %}{{ d.best_practices }}{% else %}—{% endif %}</td>
+                    <td style="padding:4px;font-family:monospace;">{% if d.seo is not None %}{{ d.seo }}{% else %}—{% endif %}</td>
+                </tr>
+            </tbody>
+        </table>
+        {% if project.pagespeed_report.tested_url %}
+        <p class="hint" style="margin:0;">Проверенный URL: {{ project.pagespeed_report.tested_url }}</p>
+        {% endif %}
+        {% if project.pagespeed_report.fetched_at %}
+        <p class="hint" style="margin:0;">Снимок: {{ project.pagespeed_report.fetched_at }}</p>
+        {% endif %}
+        {% else %}
+        <p class="hint">Метрик пока нет — укажите рабочий <strong>demo URL</strong> и нажмите кнопку ниже.</p>
+        {% endif %}
+        {% endwith %}
+        {% if project.pagespeed_external_url %}
+        <p style="margin:0.75rem 0 0;">
+            <a href="{{ project.pagespeed_external_url }}" target="_blank" rel="noopener noreferrer">Открыть полный отчёт PageSpeed Insights</a>
+        </p>
+        {% endif %}
+        <form method="post" action="{% url 'dashboard_project_pagespeed' slug=project.slug %}" style="margin-top:1rem;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Обновить метрики через API</button>
+        </form>
+    </div>
+    <div class="card" style="font-size:0.9rem;color:var(--muted);">
+        {% if project.enriched_at %}Последнее обогащение LLM: {{ project.enriched_at }}{% endif %}
+        {% if project.llm_last_error %}<br><span style="color:var(--danger);">Ошибка LLM: {{ project.llm_last_error }}</span>{% endif %}
+    </div>
+    {% endif %}
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Сохранить и обогатить через LLM</button>
+        <button type="submit" class="btn btn-ghost" name="skip_llm" value="1">Только сохранить (без LLM)</button>
+        <a class="btn" href="{% url 'dashboard_project_list' %}">Отмена</a>
+    </div>
+</form>
+{% endblock %}
