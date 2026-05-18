@@ -132,9 +132,11 @@ _db_url = _resolve_database_url()
 
 
 def _is_vercel_function_runtime() -> bool:
-    """Только рантайм Serverless-функции (файлы под /var/task). На билде Vercel использует /vercel/path0 и
-    часто выставляет VERCEL=1 — нельзя требовать DATABASE_URL на этапе сборки."""
-    return str(BASE_DIR).startswith("/var/task")
+    """Только рантайм Serverless (/var/task). Сборка идёт из /vercel/path0 — там нельзя требовать Postgres."""
+    p = str(BASE_DIR)
+    if "/vercel/path" in p:
+        return False
+    return p.startswith("/var/task")
 
 
 if _db_url:
