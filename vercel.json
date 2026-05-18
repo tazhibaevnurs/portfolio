@@ -1,0 +1,9 @@
+{
+  "experimentalServices": {
+    "web": {
+      "entrypoint": ".",
+      "routePrefix": "/",
+      "framework": "django"
+    }
+  }
+}
