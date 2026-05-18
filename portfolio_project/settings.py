@@ -131,25 +131,15 @@ def _resolve_database_url() -> str | None:
 _db_url = _resolve_database_url()
 
 
-def _running_on_vercel_cloud() -> bool:
-    """Vercel не всегда передаёт VERCEL_ENV в Python-рантайме; опираемся на системные переменные."""
-    if (os.environ.get("VERCEL_ENV") or "").lower() == "development":
-        return False  # vercel dev — локально разрешаем SQLite
-    if os.environ.get("VERCEL") == "1":
-        return True
-    if (os.environ.get("VERCEL_ENV") or "").lower() in ("production", "preview"):
-        return True
-    if os.environ.get("VERCEL_URL"):
-        return True
-    # Рантайм Vercel Functions: проект лежит под /var/task; без VERCEL_* падали бы в SQLite в read-only FS.
-    if str(BASE_DIR).startswith("/var/task"):
-        return True
-    return False
+def _is_vercel_function_runtime() -> bool:
+    """Только рантайм Serverless-функции (файлы под /var/task). На билде Vercel использует /vercel/path0 и
+    часто выставляет VERCEL=1 — нельзя требовать DATABASE_URL на этапе сборки."""
+    return str(BASE_DIR).startswith("/var/task")
 
 
 if _db_url:
     DATABASES = {"default": _database_from_url(_db_url)}
-elif _running_on_vercel_cloud():
+elif _is_vercel_function_runtime():
     raise ImproperlyConfigured(
         "На Vercel нужен PostgreSQL: задайте DATABASE_URL в Settings → Environment Variables "
         "(для Production и Preview). Подключите БД (Neon / Vercel Postgres), вставьте строку подключения, "
