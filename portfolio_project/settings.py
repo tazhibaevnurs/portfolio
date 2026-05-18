@@ -8,6 +8,8 @@ from pathlib import Path
 import os
 import urllib.parse
 
+from django.core.exceptions import ImproperlyConfigured
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -113,8 +115,30 @@ def _database_from_url(url: str) -> dict:
     return cfg
 
 
-if os.environ.get("DATABASE_URL"):
-    DATABASES = {"default": _database_from_url(os.environ["DATABASE_URL"])}
+def _resolve_database_url() -> str | None:
+    """Совместимость с Neon/Vercel и ручными именами переменных."""
+    for key in (
+        "DATABASE_URL",
+        "POSTGRES_URL",
+        "POSTGRES_PRISMA_URL",
+    ):
+        v = (os.environ.get(key) or "").strip()
+        if v:
+            return v
+    return None
+
+
+_db_url = _resolve_database_url()
+_vercel_runtime = os.environ.get("VERCEL_ENV") in ("production", "preview")
+
+if _db_url:
+    DATABASES = {"default": _database_from_url(_db_url)}
+elif _vercel_runtime:
+    raise ImproperlyConfigured(
+        "На Vercel нужен PostgreSQL: задайте DATABASE_URL в Settings → Environment Variables "
+        "(для Production и Preview). Подключите БД (Neon / Vercel Postgres), вставьте строку подключения, "
+        "затем выполните python manage.py migrate против этой БД."
+    )
 else:
     DATABASES = {
         "default": {
